@@ -319,54 +319,55 @@ public class MainActivity extends Activity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_item_about:
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.app_name) + getVersionName())
-                        .setMessage(R.string.about_info)
-                        .setPositiveButton(R.string.btn_ok, null)
-                        .setNegativeButton(R.string.btn_more, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dawei101/shadowsocks-android-java")));
-                            }
-                        })
-                        .show();
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_item_about) {
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.app_name) + getVersionName())
+                    .setMessage(R.string.about_info)
+                    .setPositiveButton(R.string.btn_ok, null)
+                    .setNegativeButton(R.string.btn_more, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/dawei101/shadowsocks-android-java")));
+                        }
+                    })
+                    .show();
 
+            return true;
+        } else if (itemId == R.id.menu_item_exit) {
+            if (!LocalVpnService.IsRunning) {
+                finish();
                 return true;
-            case R.id.menu_item_exit:
-                if (!LocalVpnService.IsRunning) {
-                    finish();
-                    return true;
-                }
+            }
 
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.menu_item_exit)
-                        .setMessage(R.string.exit_confirm_info)
-                        .setPositiveButton(R.string.btn_ok, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                LocalVpnService.IsRunning = false;
-                                LocalVpnService.Instance.disconnectVPN();
-                                stopService(new Intent(MainActivity.this, LocalVpnService.class));
-                                System.runFinalization();
-                                System.exit(0);
-                            }
-                        })
-                        .setNegativeButton(R.string.btn_cancel, null)
-                        .show();
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.menu_item_exit)
+                    .setMessage(R.string.exit_confirm_info)
+                    .setPositiveButton(R.string.btn_ok, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LocalVpnService.IsRunning = false;
+                            LocalVpnService.Instance.disconnectVPN();
+                            stopService(new Intent(MainActivity.this, LocalVpnService.class));
+                            System.runFinalization();
+                            System.exit(0);
+                        }
+                    })
+                    .setNegativeButton(R.string.btn_cancel, null)
+                    .show();
 
-                return true;
-            case R.id.menu_item_toggle_global:
-                ProxyConfig.Instance.globalMode = !ProxyConfig.Instance.globalMode;
-                if (ProxyConfig.Instance.globalMode) {
-                    onLogReceived("Proxy global mode is on");
-                } else {
-                    onLogReceived("Proxy global mode is off");
-                }
-            default:
-                return super.onOptionsItemSelected(item);
+            return true;
+        } else if (itemId == R.id.menu_item_toggle_global) {
+            ProxyConfig.Instance.globalMode = !ProxyConfig.Instance.globalMode;
+            if (ProxyConfig.Instance.globalMode) {
+                onLogReceived("Proxy global mode is on");
+            } else {
+                onLogReceived("Proxy global mode is off");
+            }
+
+            return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

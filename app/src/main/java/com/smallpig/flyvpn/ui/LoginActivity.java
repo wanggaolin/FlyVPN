@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
             }
         });
     }

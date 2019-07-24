@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,15 +7,33 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/activity_main"
-        tools:context=".ui.MainActivity">
+        tools:context=".ui.MainActivity"
+        android:padding="20dp"
+        android:orientation="vertical">
 
-    <TextView
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/textview_node"
+              android:textSize="18sp"/>
+
+    <Switch android:id="@+id/switch_global"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:checked="false"
+            android:text="@string/switch_global"
+            android:layout_gravity="end"/>
 
-</android.support.constraint.ConstraintLayout>
+    <Button android:id="@+id/button_proxylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_proxylist"
+            android:layout_gravity="end"/>
+
+    <ToggleButton android:id="@+id/togglebutton_proxy"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:checked="false"
+                  android:textOn="@string/togglebutton_texton"
+                  android:textOff="@string/togglebutton_textoff"/>
+
+</LinearLayout>

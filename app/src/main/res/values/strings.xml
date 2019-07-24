@@ -4,4 +4,9 @@
     <string name="action_login">登录</string>
     <string name="edittext_username">账号</string>
     <string name="edittext_password">密码</string>
+    <string name="textview_node">节点列表</string>
+    <string name="switch_global">全局模式</string>
+    <string name="button_proxylist">代理列表</string>
+    <string name="togglebutton_texton">结束代理</string>
+    <string name="togglebutton_textoff">开始代理</string>
 </resources>
