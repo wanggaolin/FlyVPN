@@ -7,8 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.smallpig.flyvpn.R;
+import com.smallpig.flyvpn.ui.adapter.NodeListAdapter;
 import com.vm.shadowsocks.core.AppProxyManager;
 import com.vm.shadowsocks.core.LocalVpnService;
 import com.vm.shadowsocks.core.ProxyConfig;
@@ -20,7 +22,13 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     Switch globalSwitch;
     ToggleButton proxyToggleButton;
 
-    String proxyURL = "ss://aes-256-cfb:156318aq@119.28.8.50:443";
+    ListView nodeListView;
+    NodeListAdapter nodeListadapter;
+
+
+    public static MainActivity instance;
+
+    public String proxyURL = "ss://aes-256-cfb:156318aq@119.28.8.50:443";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         setSupportActionBar(toolbar);
 
         new AppProxyManager(this);
+        instance = this;
+
+        nodeListView = findViewById(R.id.listview_node);
+        nodeListadapter = new NodeListAdapter(MainActivity.this);
+        nodeListView.setAdapter(nodeListadapter);
+        setListViewHeightBasedOnChildren(nodeListView);
 
         proxyListButton = findViewById(R.id.button_proxylist);
         proxyListButton.setOnClickListener(new View.OnClickListener() {
@@ -130,5 +144,25 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     @Override
     public void onLogReceived(String logString) {
         System.out.println(logString);
+    }
+
+    public void showException(Exception e) {
+        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT);
+    }
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        int totalHeight = 0;
+        for (int i = 0, len = listAdapter.getCount(); i < len; i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }
