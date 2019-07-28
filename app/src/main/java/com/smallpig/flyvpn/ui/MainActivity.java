@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.smallpig.flyvpn.R;
+import com.smallpig.flyvpn.core.Global;
 import com.smallpig.flyvpn.ui.adapter.NodeListAdapter;
 import com.vm.shadowsocks.core.AppProxyManager;
 import com.vm.shadowsocks.core.LocalVpnService;
@@ -25,11 +26,6 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     ListView nodeListView;
     NodeListAdapter nodeListadapter;
 
-
-    public static MainActivity instance;
-
-    public String proxyURL = "ss://aes-256-cfb:156318aq@119.28.8.50:443";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         setSupportActionBar(toolbar);
 
         new AppProxyManager(this);
-        instance = this;
 
         nodeListView = findViewById(R.id.listview_node);
         nodeListadapter = new NodeListAdapter(MainActivity.this);
@@ -91,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     }
 
     void startVPNService() {
-        LocalVpnService.ProxyUrl = proxyURL;
+        LocalVpnService.ProxyUrl = Global.proxyURL;
         startService(new Intent(this, LocalVpnService.class));
     }
 
@@ -144,10 +139,6 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     @Override
     public void onLogReceived(String logString) {
         System.out.println(logString);
-    }
-
-    public void showException(Exception e) {
-        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT);
     }
 
     public void setListViewHeightBasedOnChildren(ListView listView) {

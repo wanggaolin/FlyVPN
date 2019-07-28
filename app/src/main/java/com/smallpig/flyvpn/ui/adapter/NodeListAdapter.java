@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import com.smallpig.flyvpn.R;
+import com.smallpig.flyvpn.core.Global;
 import com.smallpig.flyvpn.tools.JsonReader;
-import com.smallpig.flyvpn.ui.MainActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,14 +23,12 @@ public class NodeListAdapter extends BaseAdapter {
     public NodeListAdapter(Context context) {
         this.context = context;
         states = new HashMap<String, Boolean>();
-        //JsonReader.GetNodeList("https://raw.githubusercontent.com/664235822/Test/master/content.json");
+        JsonReader.GetNodeList(Global.jsonPath);
     }
 
     @Override
     public int getCount() {
-        //return JsonReader.count;
-
-        return 10;
+        return JsonReader.count;
     }
 
     @Override
@@ -55,7 +53,7 @@ public class NodeListAdapter extends BaseAdapter {
         ImageView imageView = view.findViewById(R.id.nodelist_imgaeview_country);
         TextView textView = view.findViewById(R.id.nodelist_textview_name);
         RadioButton radioButton = view.findViewById(R.id.nodelist_radiobutton);
-        /*
+
         switch (JsonReader.nodeList.get(position).getCountry()) {
             case US:
                 imageView.setBackgroundResource(R.mipmap.us);
@@ -74,10 +72,6 @@ public class NodeListAdapter extends BaseAdapter {
                 break;
         }
         textView.setText(JsonReader.nodeList.get(position).getName());
-        */
-
-        imageView.setBackgroundResource(R.mipmap.us);//测试代码
-        textView.setText("香港节点");//测试代码
 
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +82,7 @@ public class NodeListAdapter extends BaseAdapter {
                 states.put(String.valueOf(position), true);
                 NodeListAdapter.this.notifyDataSetChanged();
 
-                //MainActivity.instance.proxyURL=JsonReader.nodeList.get(position).getUrl();
+                Global.proxyURL = JsonReader.nodeList.get(position).getUrl();
             }
         });
         boolean res = false;

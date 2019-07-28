@@ -1,46 +1,33 @@
 package com.smallpig.flyvpn.tools;
 
-import com.smallpig.flyvpn.ui.MainActivity;
+import android.os.StrictMode;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
 public class DownloadFile {
 
     public static String LoadURL(String urlPath) {
-        int HttpResult; // 服务器返回的状态
-        String ee = new String();
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
+
         try {
-            URL url = new URL(urlPath); // 创建URL
-            URLConnection urlconn = url.openConnection(); // 试图连接并取得返回状态码
-            urlconn.connect();
-            HttpURLConnection httpconn = (HttpURLConnection) urlconn;
-            HttpResult = httpconn.getResponseCode();
-            if (HttpResult != HttpURLConnection.HTTP_OK) {
-                System.out.print("无法连接到");
-            } else {
-                int filesize = urlconn.getContentLength(); // 取数据长度
-                InputStreamReader isReader = new InputStreamReader(urlconn.getInputStream(), "UTF-8");
-                BufferedReader reader = new BufferedReader(isReader);
-                StringBuffer buffer = new StringBuffer();
-                String line; // 用来保存每行读取的内容
-                line = reader.readLine(); // 读取第一行
-                while (line != null) { // 如果 line 为空说明读完了
-                    buffer.append(line); // 将读到的内容添加到 buffer 中
-                    buffer.append(" "); // 添加换行符
-                    line = reader.readLine(); // 读取下一行
-                }
-                System.out.print(buffer.toString());
-                ee = buffer.toString();
+            URL url = new URL(urlPath);
+            StringBuilder localStrBuilder = new StringBuilder();
+            InputStreamReader inputStreamReader = new InputStreamReader(url.openStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String lineStr = null;
+
+            while ((lineStr = bufferedReader.readLine()) != null) {
+                localStrBuilder.append(lineStr);
             }
-        } catch (FileNotFoundException e) {
-            MainActivity.instance.showException(e);
-        } catch (IOException e) {
-            MainActivity.instance.showException(e);
+            bufferedReader.close();
+            inputStreamReader.close();
+
+            return localStrBuilder.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return ee;
+        return null;
     }
 
     public static String openFile(String filePath) {
@@ -60,7 +47,7 @@ public class DownloadFile {
             }
             return localStrBulider.toString();
         } catch (Exception e) {
-            MainActivity.instance.showException(e);
+            e.printStackTrace();
         }
         return null;
     }

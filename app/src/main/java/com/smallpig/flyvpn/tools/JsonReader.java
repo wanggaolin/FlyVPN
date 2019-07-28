@@ -2,7 +2,6 @@ package com.smallpig.flyvpn.tools;
 
 import com.smallpig.flyvpn.core.Country;
 import com.smallpig.flyvpn.core.Node;
-import com.smallpig.flyvpn.ui.MainActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +31,7 @@ public class JsonReader {
                 nodeList.add(node);
             }
         } catch (JSONException e) {
-            MainActivity.instance.showException(e);
+            e.printStackTrace();
         }
     }
 }
