@@ -1,4 +1,4 @@
-package com.smallpig.flyvpn.ui.adapter;
+package com.smallpig.flyvpn.ui;
 
 import android.content.Context;
 import android.view.View;
@@ -56,19 +56,19 @@ public class NodeListAdapter extends BaseAdapter {
 
         switch (JsonReader.nodeList.get(position).getCountry()) {
             case US:
-                imageView.setBackgroundResource(R.mipmap.us);
+                imageView.setBackgroundResource(R.drawable.us);
                 break;
             case UK:
-                imageView.setBackgroundResource(R.mipmap.uk);
+                imageView.setBackgroundResource(R.drawable.uk);
                 break;
             case Singapore:
-                imageView.setBackgroundResource(R.mipmap.singapore);
+                imageView.setBackgroundResource(R.drawable.singapore);
                 break;
             case Japan:
-                imageView.setBackgroundResource(R.mipmap.japan);
+                imageView.setBackgroundResource(R.drawable.japan);
                 break;
             case HongKong:
-                imageView.setBackgroundResource(R.mipmap.hongkong);
+                imageView.setBackgroundResource(R.drawable.hongkong);
                 break;
         }
         textView.setText(JsonReader.nodeList.get(position).getName());

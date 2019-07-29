@@ -10,7 +10,7 @@
     <ImageView android:id="@+id/nodelist_imgaeview_country"
                android:layout_width="40dp"
                android:layout_height="match_parent"
-               android:background="@mipmap/us"/>
+               android:background="@drawable/us"/>
 
     <TextView android:id="@+id/nodelist_textview_name"
               android:layout_width="0dp"

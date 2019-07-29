@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.smallpig.flyvpn.R;
 import com.smallpig.flyvpn.core.Global;
-import com.smallpig.flyvpn.ui.adapter.NodeListAdapter;
 import com.vm.shadowsocks.core.AppProxyManager;
 import com.vm.shadowsocks.core.LocalVpnService;
 import com.vm.shadowsocks.core.ProxyConfig;
