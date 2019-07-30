@@ -31,4 +31,10 @@
             android:text="@string/action_login"
             android:textSize="18sp"/>
 
+    <Button android:id="@+id/button_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_register"
+            android:textSize="18sp"/>
+
 </LinearLayout>

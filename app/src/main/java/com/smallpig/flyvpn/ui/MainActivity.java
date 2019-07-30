@@ -2,6 +2,7 @@ package com.smallpig.flyvpn.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -35,7 +37,14 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         new AppProxyManager(this);
 
         nodeListView = findViewById(R.id.listview_node);
-        nodeListadapter = new NodeListAdapter(MainActivity.this);
+
+        try {
+            nodeListadapter = new NodeListAdapter(MainActivity.this);
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+
         nodeListView.setAdapter(nodeListadapter);
         setListViewHeightBasedOnChildren(nodeListView);
 

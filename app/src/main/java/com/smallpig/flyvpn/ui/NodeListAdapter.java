@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.smallpig.flyvpn.R;
 import com.smallpig.flyvpn.core.Global;
 import com.smallpig.flyvpn.tools.JsonReader;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ public class NodeListAdapter extends BaseAdapter {
 
     Map<String, Boolean> states;
 
-    public NodeListAdapter(Context context) {
+    public NodeListAdapter(Context context) throws JSONException, IOException {
         this.context = context;
         states = new HashMap<String, Boolean>();
         JsonReader.GetNodeList(Global.jsonPath);
