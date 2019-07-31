@@ -1,5 +1,8 @@
 package com.smallpig.flyvpn.ui;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -46,6 +49,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (sqlController.LoginUser(user, password)) {
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+
+                        SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+                        sp.edit().putBoolean("islogin", true).putString("username", user).apply();
+
+                        startActivity(new Intent(LoginActivity.this, UserActivity.class));
                     } else {
                         throw new Exception("登录失败，请检查用户名和密码！");
                     }
@@ -78,11 +86,5 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onDestroy() {
-        sqlController.close();
-        super.onDestroy();
     }
 }

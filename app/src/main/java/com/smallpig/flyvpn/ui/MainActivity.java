@@ -1,6 +1,8 @@
 package com.smallpig.flyvpn.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -40,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
 
         try {
             nodeListadapter = new NodeListAdapter(MainActivity.this);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(MainActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         nodeListView.setAdapter(nodeListadapter);
@@ -102,7 +104,23 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem loginMenuItem = menu.findItem(R.id.action_login);
+
+        SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+        if (sp.getBoolean("islogin", false)) {
+            loginMenuItem.setTitle(sp.getString("username", "登录"));
+        } else {
+            loginMenuItem.setTitle("登录");
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -113,7 +131,12 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         int id = item.getItemId();
 
         if (id == R.id.action_login) {
-            startActivity(new Intent(this, LoginActivity.class));
+            SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+            if (sp.getBoolean("islogin", false)) {
+                startActivity(new Intent(this, UserActivity.class));
+            } else {
+                startActivity(new Intent(this, LoginActivity.class));
+            }
         }
 
         //noinspection SimplifiableIfStatement
