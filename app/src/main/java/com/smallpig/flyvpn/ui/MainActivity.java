@@ -1,5 +1,6 @@
 package com.smallpig.flyvpn.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,13 +8,11 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import com.smallpig.flyvpn.R;
 import com.smallpig.flyvpn.core.Global;
+import com.smallpig.flyvpn.tools.MySqlController;
 import com.vm.shadowsocks.core.AppProxyManager;
 import com.vm.shadowsocks.core.LocalVpnService;
 import com.vm.shadowsocks.core.ProxyConfig;
@@ -28,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     ListView nodeListView;
     NodeListAdapter nodeListadapter;
 
+    MySqlController sqlController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
@@ -37,6 +38,13 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         setSupportActionBar(toolbar);
 
         new AppProxyManager(this);
+
+        try {
+            sqlController = new MySqlController();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
         nodeListView = findViewById(R.id.listview_node);
 
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
             if (sp.getBoolean("islogin", false)) {
                 startActivity(new Intent(this, UserActivity.class));
             } else {
-                startActivity(new Intent(this, LoginActivity.class));
+                startLoginDialog();
             }
         }
 
@@ -145,6 +153,71 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void startLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_login, null);
+
+        final EditText userEditText = view.findViewById(R.id.edittext_username);
+        final EditText passwordEditText = view.findViewById(R.id.edittext_password);
+        Button loginButton = view.findViewById(R.id.button_login);
+        Button registerButton = view.findViewById(R.id.button_register);
+
+        SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+        String username = sp.getString("username", null);
+        if (!username.isEmpty()) userEditText.setText(username);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String user = userEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                try {
+                    if (user.isEmpty() || password.isEmpty()) {
+                        throw new Exception("用户名或密码为空！");
+                    }
+
+                    if (sqlController.LoginUser(user, password)) {
+                        Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+
+                        SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
+                        sp.edit().putBoolean("islogin", true).putString("username", user).apply();
+
+                        startActivity(new Intent(MainActivity.this, UserActivity.class));
+                    } else {
+                        throw new Exception("登录失败，请检查用户名和密码！");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String user = userEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                try {
+                    if (user.isEmpty() || password.isEmpty()) {
+                        throw new Exception("用户名或密码为空！");
+                    }
+
+                    if (sqlController.RegisterUser(user, password)) {
+                        Toast.makeText(MainActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        throw new Exception("注册失败，用户已存在！");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        builder.setTitle("请登录").setView(view).show();
     }
 
     @Override
