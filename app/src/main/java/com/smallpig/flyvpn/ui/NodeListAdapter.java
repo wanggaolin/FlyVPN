@@ -8,8 +8,9 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import com.smallpig.flyvpn.R;
-import com.smallpig.flyvpn.core.Global;
+import com.smallpig.flyvpn.core.Properties;
 import com.smallpig.flyvpn.tools.JsonReader;
+import com.smallpig.flyvpn.tools.PingNet;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class NodeListAdapter extends BaseAdapter {
     public NodeListAdapter(Context context) throws JSONException, IOException {
         this.context = context;
         states = new HashMap<String, Boolean>();
-        JsonReader.GetNodeList(Global.jsonPath);
+        JsonReader.GetNodeList(Properties.jsonPath);
     }
 
     @Override
@@ -54,6 +55,7 @@ public class NodeListAdapter extends BaseAdapter {
 
         ImageView imageView = view.findViewById(R.id.nodelist_imgaeview_country);
         TextView textView = view.findViewById(R.id.nodelist_textview_name);
+        final TextView pingView = view.findViewById(R.id.nodelist_textview_ping);
         RadioButton radioButton = view.findViewById(R.id.nodelist_radiobutton);
 
         switch (JsonReader.nodeList.get(position).getCountry()) {
@@ -75,6 +77,20 @@ public class NodeListAdapter extends BaseAdapter {
         }
         textView.setText(JsonReader.nodeList.get(position).getName());
 
+        try {
+            PingNet pingNet = new PingNet(JsonReader.nodeList.get(position).getUrl());
+            pingNet.ping();
+            if (pingNet.isResult()) {
+                pingView.setText(pingNet.getPingTime());
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            pingView.setText("超时");
+        }
+
+
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +100,7 @@ public class NodeListAdapter extends BaseAdapter {
                 states.put(String.valueOf(position), true);
                 NodeListAdapter.this.notifyDataSetChanged();
 
-                Global.proxyURL = JsonReader.nodeList.get(position).getUrl();
+                Properties.proxyURL = JsonReader.nodeList.get(position).getUrl();
             }
         });
         boolean res = false;

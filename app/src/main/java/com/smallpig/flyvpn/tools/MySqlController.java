@@ -1,6 +1,6 @@
 package com.smallpig.flyvpn.tools;
 
-import com.smallpig.flyvpn.core.Global;
+import com.smallpig.flyvpn.core.Properties;
 
 import java.sql.*;
 
@@ -13,7 +13,7 @@ public class MySqlController {
     }
 
     public boolean RegisterUser(String user, String password) throws SQLException {
-        con = DriverManager.getConnection(Global.mysqlURL, "smallpig", "156318aq");
+        con = DriverManager.getConnection(Properties.mysqlURL, "smallpig", "156318aq");
         Statement state = con.createStatement();
 
         String sqlselect = "select * from users where user='" + user + "'";
@@ -31,7 +31,7 @@ public class MySqlController {
     }
 
     public boolean LoginUser(String user, String password) throws SQLException {
-        con = DriverManager.getConnection(Global.mysqlURL, "smallpig", "156318aq");
+        con = DriverManager.getConnection(Properties.mysqlURL, "smallpig", "156318aq");
         Statement state = con.createStatement();
         String sql = "select * from users where user='" + user + "' and password='" + password + "'";
         ResultSet result = state.executeQuery(sql);
