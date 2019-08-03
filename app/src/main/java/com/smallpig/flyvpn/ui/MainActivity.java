@@ -4,8 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +15,7 @@ import android.view.*;
 import android.widget.*;
 import com.smallpig.flyvpn.R;
 import com.smallpig.flyvpn.core.Properties;
+import com.smallpig.flyvpn.service.NotificationService;
 import com.smallpig.flyvpn.tools.MySqlController;
 import com.vm.shadowsocks.core.AppProxyManager;
 import com.vm.shadowsocks.core.LocalVpnService;
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
                     }
                 } else {
                     LocalVpnService.IsRunning = false;
+                    stopService(new Intent(MainActivity.this, NotificationService.class));
                 }
             }
         });
@@ -126,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     void startVPNService() {
         LocalVpnService.ProxyUrl = Properties.proxyURL;
         startService(new Intent(this, LocalVpnService.class));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, NotificationService.class));
+        } else {
+            startService(new Intent(this, NotificationService.class));
+        }
     }
 
     @Override
