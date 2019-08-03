@@ -1,0 +1,19 @@
+﻿{
+    "nodes": [
+        {
+            "name": "Google",
+            "url": "ss://aes-256-cfb:156318aq@119.28.8.50:443",
+            "country": "US"
+        },
+        {
+            "name": "Baidu",
+            "url": "ss://aes-256-cfb:156318aq@119.28.8.50:443",
+            "country": "UK"
+        },
+        {
+            "name": "SoSo",
+            "url": "http://www.SoSo.com",
+            "country": "Singapore"
+        }
+    ]
+}
