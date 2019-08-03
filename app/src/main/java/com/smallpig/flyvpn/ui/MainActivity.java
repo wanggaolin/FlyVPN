@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Properties.isProxyRefresh = true;
                 initialize();
                 refreshLayout.setRefreshing(false);
             }

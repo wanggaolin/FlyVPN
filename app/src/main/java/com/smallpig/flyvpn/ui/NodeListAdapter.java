@@ -77,23 +77,26 @@ public class NodeListAdapter extends BaseAdapter {
         }
         textView.setText(JsonReader.nodeList.get(position).getName());
 
-        try {
-            PingNet pingNet = new PingNet(JsonReader.nodeList.get(position).getUrl());
-            pingNet.ping();
-            if (pingNet.isResult()) {
-                pingView.setText(pingNet.getPingTime());
-            } else {
-                throw new Exception();
+        if(Properties.isProxyRefresh) {
+            try {
+                PingNet pingNet = new PingNet(JsonReader.nodeList.get(position).getUrl());
+                pingNet.ping();
+                if (pingNet.isResult()) {
+                    pingView.setText(pingNet.getPingTime());
+                } else {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                pingView.setText("超时");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            pingView.setText("超时");
         }
 
 
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Properties.isProxyRefresh = false;
                 for (String key : states.keySet()) {
                     states.put(key, false);
                 }
