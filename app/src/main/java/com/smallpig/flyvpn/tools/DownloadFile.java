@@ -6,7 +6,7 @@ import java.net.URL;
 
 public class DownloadFile {
 
-    public static String LoadURL(String urlPath) throws MalformedURLException ,IOException {
+    public static String LoadURL(String urlPath) throws IOException {
         URL url = new URL(urlPath);
         StringBuilder localStrBuilder = new StringBuilder();
         InputStreamReader inputStreamReader = new InputStreamReader(url.openStream());
@@ -22,7 +22,7 @@ public class DownloadFile {
         return localStrBuilder.toString();
     }
 
-    public static String openFile(String filePath) throws FileNotFoundException,IOException {
+    public static String openFile(String filePath) throws IOException {
         File file = new File(filePath);
         StringBuilder localStrBulider = new StringBuilder();
         if (file.isFile() && file.exists()) {

@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
     ListView nodeListView;
     NodeListAdapter nodeListadapter;
 
-    MySqlController sqlController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites().detectNetwork().penaltyLog().build());
@@ -115,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
 
     void initialize() {
         try {
-            sqlController = new MySqlController();
             nodeListadapter = new NodeListAdapter(MainActivity.this);
             nodeListView.setAdapter(nodeListadapter);
             setListViewHeightBasedOnChildren(nodeListView);
@@ -209,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
                                 throw new Exception("用户名或密码为空！");
                             }
 
-                            if (sqlController.LoginUser(user, password)) {
+                            if (MySqlController.getInstance().LoginUser(user, password)) {
                                 Looper.prepare();
                                 Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 
@@ -248,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
                                 throw new Exception("用户名或密码为空！");
                             }
 
-                            if (sqlController.RegisterUser(user, password)) {
+                            if (MySqlController.getInstance().RegisterUser(user, password)) {
                                 Looper.prepare();
                                 Toast.makeText(MainActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                                 Looper.loop();

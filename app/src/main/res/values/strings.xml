@@ -14,4 +14,7 @@
     <string name="togglebutton_textoff">开始代理</string>
     <string name="textview_username">用户名</string>
     <string name="textview_flow">剩余流量</string>
+    <string name="textview_recharge_left">充值流量</string>
+    <string name="textview_recharge_right">GB</string>
+    <string name="button_recharge">充值</string>
 </resources>
