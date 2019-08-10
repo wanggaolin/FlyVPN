@@ -26,7 +26,7 @@ public class NotificationService extends Service {
     private Handler mHander;
     private Timer mTimer;
 
-    private long rechargeFlow;
+    private long rechargeFlow = 0;
 
     private final int UPDATE_FREQUENCY = 60;
     private int times = 1;
@@ -45,19 +45,27 @@ public class NotificationService extends Service {
 
         SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
         final String username = sp.getString("username", "");
-        try {
-            rechargeFlow = MySqlController.getInstance().getFlow(username);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    rechargeFlow = MySqlController.getInstance().getFlow(username);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
 
         mHander = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 if (msg.what == 1) {
-                    long speed = (long)msg.obj;
-                    rechargeFlow -= speed;
+                    long speed = (long) msg.obj;
+                    if (rechargeFlow != 0)
+                        rechargeFlow -= speed;
                     remoteViews.setTextViewText(R.id.notification_textview_rechargeflow, "剩余流量：" + Formatter.formatFileSize(getApplicationContext(), rechargeFlow));
                     remoteViews.setTextViewText(R.id.notification_textview_totalspeed, "当前速度：" + Formatter.formatFileSize(getApplicationContext(), speed));
                     notificationManager.notify(1, notification);
@@ -71,6 +79,9 @@ public class NotificationService extends Service {
                 @Override
                 public void run() {
                     if (times == UPDATE_FREQUENCY) {
+                        if (rechargeFlow == 0)
+                            return;
+
                         try {
                             MySqlController.getInstance().setFlow(username, rechargeFlow);
                         } catch (Exception e) {
@@ -121,9 +132,9 @@ public class NotificationService extends Service {
         super.onDestroy();
     }
 
-    RemoteViews getRemoteViews(){
-        remoteViews.setTextViewText(R.id.notification_textview_rechargeflow,"剩余流量：0");
-        remoteViews.setTextViewText(R.id.notification_textview_totalspeed,"当前速度：0");
+    RemoteViews getRemoteViews() {
+        remoteViews.setTextViewText(R.id.notification_textview_rechargeflow, "剩余流量：0");
+        remoteViews.setTextViewText(R.id.notification_textview_totalspeed, "当前速度：0");
         return remoteViews;
     }
 }
