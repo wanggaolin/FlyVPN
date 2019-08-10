@@ -95,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
                 if (!buttonView.isPressed())
                     return;
 
+                SharedPreferences spl = getSharedPreferences("login", Context.MODE_PRIVATE);
+                if (!spl.getBoolean("islogin", false)) {
+                    Toast.makeText(MainActivity.this, "未登录，无法使用代理！", Toast.LENGTH_SHORT).show();
+                    proxyToggleButton.setChecked(false);
+                    return;
+                }
+
                 Intent intent = LocalVpnService.prepare(MainActivity.this);
 
                 if (isChecked) {
@@ -189,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
         Button registerButton = view.findViewById(R.id.button_register);
 
         SharedPreferences sp = getSharedPreferences("login", Context.MODE_PRIVATE);
-        String username = sp.getString("username", null);
+        String username = sp.getString("username", "");
         if (!username.isEmpty()) userEditText.setText(username);
 
         loginButton.setOnClickListener(new View.OnClickListener() {

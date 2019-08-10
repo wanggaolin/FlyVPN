@@ -77,16 +77,16 @@ public class TrafficInfo {
     /**
      * 获取当前网速，小数点保留一位
      */
-    public double getNetSpeed() {
+    public long getNetSpeed() {
         long curRxBytes = getNetworkRxBytes();
         if (preRxBytes == 0)
             preRxBytes = curRxBytes;
         long bytes = curRxBytes - preRxBytes;
         preRxBytes = curRxBytes;
         //int kb = (int) Math.floor(bytes / 1024 + 0.5);
-        double kb = (double) bytes / (double) 1024;
-        BigDecimal bd = new BigDecimal(kb);
-        return bd.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+        //double kb = (double) bytes / (double) 1024;
+        //BigDecimal bd = new BigDecimal(kb);
+        return bytes;
     }
 
     /**
@@ -108,15 +108,7 @@ public class TrafficInfo {
                         msg.what = 1;
                         //msg.arg1 = getNetSpeed();
                         //msg.obj = getNetSpeed();
-                        Bundle data = new Bundle();
-                        try {
-                            data.putLong("upload", getSndTraffic());
-                            data.putLong("download", getRcvTraffic());
-                            data.putDouble("speed", getNetSpeed());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        msg.setData(data);
+                        msg.obj=getNetSpeed();
                         mHandler.sendMessage(msg);
                         times = 1;
                     } else {
