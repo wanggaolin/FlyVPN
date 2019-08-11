@@ -17,4 +17,5 @@
     <string name="textview_recharge_left">充值流量</string>
     <string name="textview_recharge_right">GB</string>
     <string name="button_recharge">充值</string>
+    <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
 </resources>

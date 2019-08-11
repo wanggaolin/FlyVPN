@@ -13,6 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.smallpig.flyvpn.R;
 import com.smallpig.flyvpn.tools.MySqlController;
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import java.sql.SQLException;
 
@@ -62,6 +65,9 @@ public class UserActivity extends AppCompatActivity {
         rechargeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                wxPay();
+
                 long rechargeFlow = Long.parseLong(rechargeEditText.getText().toString()) * 1024 * 1024 * 1024;
                 flow += rechargeFlow;
                 try {
@@ -79,5 +85,21 @@ public class UserActivity extends AppCompatActivity {
         flow = MySqlController.getInstance().getFlow(username);
         flowTextView.setText(Formatter.formatFileSize(UserActivity.this, flow));
         sp.edit().putLong("flow", flow).apply();
+    }
+
+    void wxPay(){
+        IWXAPI api = WXAPIFactory.createWXAPI(UserActivity.this, null);
+        api.registerApp("你的appid");
+        PayReq req = new PayReq();
+        req.appId           = "wx8888888888888888";//你的微信appid
+        req.partnerId       = "1900000109";//商户号
+        req.prepayId        = "WX1217752501201407033233368018";//预支付交易会话ID
+        req.nonceStr        = "5K8264ILTKCH16CQ2502SI8ZNMTM67VS";//随机字符串
+        req.timeStamp       = "1412000000";//时间戳
+        req.packageValue    = "Sign=WXPay";//扩展字段,这里固定填写Sign=WXPay
+        req.sign            = "C380BEC2BFD727A4B6845133519F3AD6";//签名
+ //            req.extData         = "app data"; // optional
+        // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+        api.sendReq(req);
     }
 }

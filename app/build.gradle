@@ -29,4 +29,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation project(':shadowsocks')
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 }
