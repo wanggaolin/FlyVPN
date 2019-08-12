@@ -94,6 +94,11 @@ public class MainActivity extends AppCompatActivity implements LocalVpnService.o
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!buttonView.isPressed())
                     return;
+                if (Properties.proxyURL.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "请选择要连接的节点！", Toast.LENGTH_SHORT).show();
+                    proxyToggleButton.setChecked(false);
+                    return;
+                }
 
                 SharedPreferences spl = getSharedPreferences("login", Context.MODE_PRIVATE);
                 if (!spl.getBoolean("islogin", false)) {
